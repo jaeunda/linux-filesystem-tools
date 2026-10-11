@@ -1,9 +1,9 @@
-[submodule "lsp-p1"]
-	path = lsp-p1
-	url = git@github.com:jaeunda/lsp-p1.git
-[submodule "lsp-p2"]
-	path = lsp-p2
-	url = git@github.com:jaeunda/lsp-p2.git
-[submodule "lsp-p3"]
-	path = lsp-p3
-	url = git@github.com:jaeunda/lsp-p3.git
+[submodule "file-tree-organizer"]
+	path = file-tree-organizer
+	url = https://github.com/jaeunda/file-tree-organizer.git
+[submodule "file-organizer-daemon"]
+	path = file-organizer-daemon
+	url = https://github.com/jaeunda/file-organizer-daemon.git
+[submodule "ext2-image-inspector"]
+	path = ext2-image-inspector
+	url = https://github.com/jaeunda/ext2-image-inspector.git
