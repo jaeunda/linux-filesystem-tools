@@ -43,4 +43,4 @@ Source review also identified the organizer's missing copy-success return and mi
 | P2: manager commands, daemon loop, source/output lists | `daemon-control.svg`, `daemon-cycle.svg`, `directory-merge.svg` |
 | P3: prompt dispatch, tree flow, print flow | `command-shell.svg`, `tree-pipeline.svg`, `print-pipeline.svg` |
 
-The collection overview and ext2 inode-addressing diagram are additional figures. All twelve figures are SVG vectors with outlined Noto Sans labels, descriptive titles, and a shared restrained palette. Font licenses are included with the assets. The redraws use actual source names and behavior where the original diagram or prose differed from the code.
+The collection overview, three compact project diagrams in the main README, and ext2 inode-addressing diagram are additional figures. All fifteen figures are SVG vectors with outlined Noto Sans labels, descriptive titles, and a shared restrained palette. Font licenses are included with the assets. The redraws use actual source names and behavior where the original diagram or prose differed from the code.

@@ -12,6 +12,8 @@ The [file tree organizer](https://github.com/jaeunda/file-tree-organizer#readme)
 
 Flattening subdirectories can produce duplicate basenames. I kept that decision visible: the user can select a source, compare or edit the candidates through external tools, or omit the conflicting pair. Extension and subtree filters narrow the selection; the modification-time filter includes files changed within the requested age.
 
+![Nested source files pass through selection and duplicate-name resolution before being copied into extension folders; the original hierarchy stays in place.](docs/assets/organizer-core.svg)
+
 The interactive shell validates the request, encodes worker arguments, and uses `fork`/`execvp` to run the operation in a separate process. The parent waits and returns to its prompt after the worker exits.
 
 In a controlled local measurement, organizing **512 files / 128 MiB took a median 0.122 seconds over five runs**. All 2,560 copies passed SHA-256 verification. This measures complete requests on a warm-cache WSL2 ext4 filesystem; it does not measure durable disk throughput or establish a speedup over another tool. [Fixture, individual timings, and reproduction script](https://github.com/jaeunda/file-tree-organizer/blob/main/docs/measurements.md).
@@ -22,6 +24,8 @@ A successful one-time copy becomes stale when the source changes. The [file orga
 
 Each worker reads the current configuration, builds filename-sorted source and destination lists, then advances two pointers. Source-only entries are copied; destination-only entries are removed; matching names use the configured modification-time policy. The destination is therefore a managed view of the selected files, with deletion propagated from that selection.
 
+![Each polling worker compares selected source files with the arranged destination, copies additions, applies the modification-time policy, and removes stale files before the daemon sleeps and scans again.](docs/assets/daemon-core.svg)
+
 I separated the long-lived polling process from the short-lived worker so filters and duplicate policies can be reloaded between scans. Configuration, registration, and copy-log operations use advisory `fcntl` locks. The shell exposes `add`, `modify`, `remove`, and `show`, while daemons continue after the shell exits.
 
 Validation confirmed that a daemon survived shell exit, copied a later file, applied a revised extension filter, and removed its registration. The current daemon retains its original sleep interval, and its SIGTERM path does not wait for an active worker; the detailed README explains those lifecycle limits.
@@ -31,6 +35,8 @@ Validation confirmed that a daemon survived shell exit, copied a later file, app
 The [ext2 image inspector](https://github.com/jaeunda/ext2-image-inspector#readme) exposes `tree` and `print` without mounting the image or linking an ext2 library. It opens the image read-only and uses locally defined disk structures with `lseek` and `read`.
 
 The superblock supplies filesystem geometry. Group descriptors identify inode tables; directory records connect names to inode numbers. A depth-tagged linked list lets the tree renderer work with recovered names and metadata. File printing follows direct, single-, double-, and triple-indirect pointer paths.
+
+![Read-only ext2 inspection translates filesystem geometry and directory entries into inodes, then follows directory records for tree output or data-block pointers for text output.](docs/assets/ext2-core.svg)
 
 Fresh 1 KiB and 4 KiB block images reproduced recursive trees, permissions, short text, empty files, missing-path errors, and a 480,000-byte text fixture. The image hashes stayed unchanged. Printing remains text-oriented: blank lines disappear and lines crossing block boundaries are split. Directory lookup also has a reproduced prefix-match defect. These tools demonstrate the decoding mechanism rather than full ext2 compatibility.
 
@@ -53,4 +59,4 @@ make
 
 For an existing clone, initialize the projects with `git submodule update --init --recursive`. Run each interactive program from its own project directory; the organizer and daemon resolve their worker executables there. Their original executable names remain the command interface.
 
-The detailed READMEs explain the implementation, commands, verified behavior, and remaining limits. [Validation notes](docs/validation.md) record the shared environment and checks. All ten design diagrams from the development reports are included as redesigned SVGs, alongside an overview and an inode-addressing figure. Figures use outlined Noto Sans with the [font license](docs/assets/NotoSans-OFL.txt). Original Word reports and extracted screenshots remain outside the repositories.
+The detailed READMEs explain the implementation, commands, verified behavior, and remaining limits. [Validation notes](docs/validation.md) record the shared environment and checks. All ten design diagrams from the development reports are included as redesigned SVGs, alongside an overview, three compact project diagrams, and an inode-addressing figure. Figures use outlined Noto Sans with the [font license](docs/assets/NotoSans-OFL.txt). Original Word reports and extracted screenshots remain outside the repositories.
